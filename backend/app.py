@@ -1,4 +1,3 @@
-```python
 """
 app.py
 ------
@@ -163,4 +162,3 @@ def chat(req: ChatRequest):
         artifacts=artifacts,
         tool_trace=tool_trace,
     )
-```
