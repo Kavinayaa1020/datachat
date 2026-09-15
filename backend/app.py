@@ -46,6 +46,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5500",
         "http://127.0.0.1:5500",
+        "https://datachat-sigma.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -102,6 +103,7 @@ def get_session_history(session_id: str):
         "history": history
     }
 
+
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
     session_id = req.session_id or str(uuid.uuid4())
@@ -120,6 +122,7 @@ def chat(req: ChatRequest):
 
     history.append({"role": "user", "content": req.message})
     history.append({"role": "assistant", "content": reply})
+
     # Keep session history bounded
     SESSIONS[session_id] = history[-40:]
 
