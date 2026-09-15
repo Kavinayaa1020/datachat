@@ -1,156 +1,165 @@
-
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>DataChat — Talk to Your Database</title>
+  <title>DataChat</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  >
+  <link rel="stylesheet" href="style.css">
 
-  <link rel="stylesheet" href="style.css" />
+  <script>
+    window.DATACHAT_API_BASE = "https://datachat-backend-8pjo.onrender.com";
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
 </head>
 
 <body>
 
   <div class="app">
 
-    <aside class="sidebar">
+```
+<aside class="sidebar">
 
-      <div class="brand">
-        <div class="brand-mark">DC</div>
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon">D</div>
 
-        <div>
-          <div class="brand-title">DataChat</div>
-          <div class="brand-sub">LLM DB Agent · Gemini</div>
-        </div>
+      <div>
+        <h1>DataChat</h1>
+        <span>AI Database Assistant</span>
       </div>
+    </div>
+  </div>
+
+  <button id="newChatBtn" class="new-chat-btn">
+    + New chat
+  </button>
+
+  <div class="sidebar-section">
+
+    <div class="section-title">
+      Conversations
+    </div>
+
+    <ul id="historyList" class="history-list"></ul>
+
+  </div>
+
+  <div class="sidebar-section schema-section">
+
+    <div class="section-title">
+      Database schema
+    </div>
+
+    <div id="schemaList" class="schema-list">
+      Loading schema...
+    </div>
+
+  </div>
+
+</aside>
 
 
-      <button id="newChatBtn" class="new-chat-btn">
-        <span class="plus-icon">＋</span>
-        New conversation
-      </button>
+<main class="main">
 
+  <header class="topbar">
 
-      <div class="sidebar-section history-section">
-        <div class="sidebar-heading">Chat history</div>
+    <div class="topbar-title">
 
-        <ul id="historyList" class="history-list"></ul>
-      </div>
+      <h2>DataChat</h2>
 
+      <div class="backend-status">
 
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Try asking</div>
-
-        <ul class="suggestion-list" id="suggestionList">
-
-          <li>Show me the top 5 products by revenue</li>
-
-          <li>Draw an ER diagram of this database</li>
-
-          <li>What's the monthly order trend for the last year?</li>
-
-          <li>Break down orders by status as a pie chart</li>
-
-          <li>Create a flowchart of how an order flows through the system</li>
-
-          <li>Which customers have placed the most orders?</li>
-
-        </ul>
-      </div>
-
-
-      <div class="sidebar-section schema-section">
-
-        <div class="sidebar-heading">Database schema</div>
-
-        <div id="schemaList" class="schema-list">
-          Loading…
-        </div>
-
-      </div>
-
-
-      <div class="sidebar-footer">
-        Backend:
-        <span id="backendStatus" class="status-dot status-pending">
-          checking…
+        <span
+          id="backendStatus"
+          class="status-dot status-error">
         </span>
+
+        <span>Backend</span>
+
       </div>
 
-    </aside>
+    </div>
+
+  </header>
 
 
-    <main class="chat-pane">
+  <section id="messages" class="messages">
 
-      <header class="chat-header">
+    <div class="empty-state">
 
-        <div class="header-content">
+      <h2>Ask your database anything</h2>
 
-          <div class="header-icon">✦</div>
+      <p>
+        Ask questions about your data using natural language.
+      </p>
 
-          <div>
-            <h1>Conversational Data Agent</h1>
+      <div class="example-questions">
 
-            <p>
-              Ask questions in plain English — I'll query the database,
-              chart the results, and explain the insights.
-            </p>
-          </div>
-
-        </div>
-
-      </header>
-
-
-      <div id="messages" class="messages"></div>
-
-
-      <form id="chatForm" class="chat-input-bar">
-
-        <textarea
-          id="chatInput"
-          placeholder="Ask about your data… e.g. 'Show revenue by category as a bar chart'"
-          rows="1"
-        ></textarea>
-
-        <button type="submit" id="sendBtn" aria-label="Send">
-
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M4 12L20 4L14 20L11 13L4 12Z"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linejoin="round"
-              stroke-linecap="round"
-            />
-          </svg>
-
+        <button type="button">
+          Show the top 5 products by revenue
         </button>
 
-      </form>
+        <button type="button">
+          Show the total revenue
+        </button>
 
-    </main>
+        <button type="button">
+          Which products have the highest sales?
+        </button>
+
+        <button type="button">
+          Draw the ER diagram for this database
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <div class="suggestions-wrapper">
+
+    <ul id="suggestionList" class="suggestion-list"></ul>
 
   </div>
 
 
-  <script>
-    window.DATACHAT_API_BASE = "https://datachat-backend-8pjo.onrender.com";
-  </script>
+  <form id="chatForm" class="chat-form">
+
+    <div class="input-wrapper">
+
+      <textarea
+        id="chatInput"
+        rows="1"
+        placeholder="Ask your database anything..."
+        autocomplete="off">
+      </textarea>
+
+      <button
+        id="sendBtn"
+        type="submit"
+        aria-label="Send message">
+        Send
+      </button>
+
+    </div>
+
+    <div class="input-hint">
+      Press Enter to send · Shift + Enter for a new line
+    </div>
+
+  </form>
+
+</main>
+```
+
+  </div>
 
   <script src="app.js"></script>
 
